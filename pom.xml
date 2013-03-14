@@ -1,62 +1,118 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.hellblazer</groupId>
-    <artifactId>soot.osgi</artifactId>
-    <version>2.5.1-SNAPSHOT</version>
-    <packaging>bundle</packaging>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.hellblazer</groupId>
+	<artifactId>soot.osgi</artifactId>
+	<version>2.5.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-    <name>soot-packaging OSGi Bundle</name>
+	<name>soot-packaging OSGi Bundle</name>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.sable</groupId>
-            <artifactId>soot</artifactId>
-            <version>2.5.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>org.sable</groupId>
+			<artifactId>soot</artifactId>
+			<version>2.5.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
-    <!-- ================================================ -->
-    <!-- Repository Configuration -->
-    <!-- ================================================ -->
+	<!-- ================================================ -->
+	<!-- Repository Configuration -->
+	<!-- ================================================ -->
 
-    <repositories>
-        <repository>
-            <id>local.lib</id>
-            <name>local lib</name>
-            <url>file://${basedir}/lib/</url>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>local.lib</id>
+			<name>local lib</name>
+			<url>file://${basedir}/lib/</url>
+		</repository>
+	</repositories>
 
-    <distributionManagement>
-        <repository>
-            <id>Hellbound Simulations</id>
-            <name>Karios Repository</name>
-            <url>file://${thirdspace.external.repository}</url>
-        </repository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>Hellbound Simulations</id>
+			<name>Karios Repository</name>
+			<url>file://${thirdspace.external.repository}</url>
+		</repository>
+	</distributionManagement>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.3.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Embed-Dependency>*;scope=provided;inline=true</Embed-Dependency>
-                        <_exportcontents>*</_exportcontents>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<includes>**/*.*</includes>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.7,)
+										</versionRange>
+										<goals>
+											<goal>unpack</goal>
+											<goal>
+												unpack-dependencies
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>
